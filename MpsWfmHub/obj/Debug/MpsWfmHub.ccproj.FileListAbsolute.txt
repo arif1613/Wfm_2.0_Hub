@@ -94,3 +94,5 @@ C:\Conax_Final\MpsWfmHub\MpsWfmHub\obj\Debug\WfmHubWorker\System.Web.Http.Owin.d
 C:\Conax_Final\MpsWfmHub\MpsWfmHub\obj\Debug\WfmHubWorker\WfmHubWorker.dll
 C:\Conax_Final\MpsWfmHub\MpsWfmHub\obj\Debug\WfmHubWorker\WfmHubWorker.dll.config
 C:\Conax_Final\MpsWfmHub\MpsWfmHub\obj\Debug\WfmHubWorker\WfmHubWorker.pdb
+C:\Wfm_Git\WfmHubServer\MpsWfmHub\bin\Debug\ServiceConfiguration.cscfg
+C:\Wfm_Git\WfmHubServer\MpsWfmHub\bin\Debug\ServiceDefinition.csdef
