@@ -1,0 +1,17 @@
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\ProcessMpsListenerMsg.dll.config
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\ProcessMpsListenerMsg.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\ProcessMpsListenerMsg.pdb
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.ServiceBus.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.WindowsAzure.Configuration.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.WindowsAzure.Diagnostics.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.WindowsAzure.Storage.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Newtonsoft.Json.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.WindowsAzure.Diagnostics.StorageUtility.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.ServiceBus.xml
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.WindowsAzure.Configuration.xml
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.WindowsAzure.Diagnostics.xml
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Microsoft.WindowsAzure.Storage.xml
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\bin\Debug\Newtonsoft.Json.xml
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\obj\Debug\ProcessMpsListenerMsg.csprojResolveAssemblyReference.cache
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\obj\Debug\ProcessMpsListenerMsg.dll
+C:\Conax_Final\MpsWfmHub\ProcessMpsListenerMsg\obj\Debug\ProcessMpsListenerMsg.pdb

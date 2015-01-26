@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>WamsApi.Tests</id>
+        <version>1.0.0</version>
+        <authors>MPS Broadband AB</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>WamsApi.Tests</description>
+	    <dependencies>
+			<dependency id="Machine.Specifications" version="[0.8.1]" />
+			<dependency id="Machine.Specifications.Should" version="[0.7.1]" />
+			<dependency id="NLog" version="[2.1.0]" />
+			<dependency id="FakeItEasy" version="[1.18.0]" />
+	    </dependencies>
+    </metadata>
+	<files>
+		<file src="WamsApi.Tests.dll" target="lib\net45" />
+		<file src="WamsApi.Tests.pdb" target="lib\net45" />
+	</files>
+</package>

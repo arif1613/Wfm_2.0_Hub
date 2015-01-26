@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>WamsApi</id>
+        <version>1.0.0</version>
+        <authors>MPS Broadband AB</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>WamsApi</description>
+	    <dependencies>
+			<dependency id="windowsazure.mediaservices" version="[3.0.0.5]" />
+			<dependency id="NLog" version="[2.1.0]" />
+	    </dependencies>
+    </metadata>
+	<files>
+		<file src="WamsApi.dll" target="lib\net45" />
+		<file src="WamsApi.pdb" target="lib\net45" />
+	</files>
+</package>

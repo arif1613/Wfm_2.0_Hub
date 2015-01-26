@@ -1,0 +1,410 @@
+﻿using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using CommonDomainLibrary;
+using CommonDomainLibrary.Common;
+using CommonDomainLibrary.Security;
+using Microsoft.Practices.TransientFaultHandling;
+using Microsoft.ServiceBus;
+using Microsoft.ServiceBus.Messaging;
+using NLog;
+using Newtonsoft.Json;
+using NodaTime;
+using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
+using IBus = CommonDomainLibrary.Common.IBus;
+using RetryPolicy = Microsoft.Practices.TransientFaultHandling.RetryPolicy;
+
+namespace Bus
+{
+    public class Bus : IBus
+    {
+        private const int NumberOfRetriesBeforeDeadLettering = 3;
+        private static readonly RetryPolicy RetryPolicy = new RetryPolicy<TransientErrorDetectionStrategy>(
+                                    new ExponentialBackoff("Retry policy", 5, TimeSpan.FromMilliseconds(10), TimeSpan.FromSeconds(2), TimeSpan.FromMilliseconds(30), true));
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private readonly string _connectionString;
+        private readonly IHandlerResolver _handlerResolver;
+        private readonly ISerializer _serializer;
+        private readonly NamespaceManager _namespaceManager;
+        private readonly ConcurrentDictionary<Type, TopicClient> _topicClients;
+
+        public Bus(string connectionString, IHandlerResolver handlerResolver, ISerializer serializer)
+        {
+            if (handlerResolver == null)
+            {
+                throw new ArgumentNullException("handlerResolver", "Handler resolver cannot be null.");
+            }
+
+            _connectionString = connectionString;
+            _handlerResolver = handlerResolver;
+            _serializer = serializer;
+            _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
+            _topicClients = new ConcurrentDictionary<Type, TopicClient>();
+        }
+
+        public async Task Publish(IMessage message, ICommonIdentity identity = null)
+        {
+            await Publish(message, identity, Instant.MinValue);
+        }
+
+        public async Task Publish(IMessage message, ICommonIdentity identity, Instant defer)
+        {
+            Logger.Info("({0})BEGIN: Publishing message of type '{1}': {2}", message.CorrelationId, message.GetType().Name, JsonConvert.SerializeObject(message));
+
+            if (identity == null)
+            {
+                identity = Thread.CurrentPrincipal.Identity as ICommonIdentity;
+            }
+
+            var messageType = message.GetType();
+            if (!_topicClients.ContainsKey(messageType))
+            {
+                if (!_namespaceManager.TopicExists(message.GetType().ToString()))
+                {
+                    Logger.Warn("({0})No consumer for message type '{1}'. Message with id '{2}' ignored.", message.CorrelationId, message.GetType(), message.MessageId);
+                    return;
+                }
+
+                try
+                {
+                    RetryPolicy.ExecuteAction(() =>
+                        {
+                            _topicClients[messageType] = TopicClient.CreateFromConnectionString(_connectionString,
+                                                                                                messageType.ToString());
+                        });
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException(string.Format("({0})Error creating client for topic: '{1}'", message.CorrelationId, message.GetType()), ex);
+                    throw;
+                }
+            }
+
+            var client = _topicClients[messageType];
+
+            try
+            {
+                var ms = new MemoryStream();
+                _serializer.Serialize(message, ms);
+
+                await RetryPolicy.ExecuteAsync(async () =>
+                    {
+                        ms.Seek(0, SeekOrigin.Begin);
+
+                        var brokeredMessage = new BrokeredMessage(ms, false)
+                            {
+                                MessageId = message.MessageId.ToString(),
+                                ContentType =
+                                    message.GetType().AssemblyQualifiedName
+                            };
+
+                        if (defer != Instant.MinValue)
+                        {
+                            Logger.Info(
+                                "({0})Setting ScheduledEnqueueTimeUtc to '{1}' on message '{2}'.",
+                                message.CorrelationId, defer,
+                                message.MessageId);
+
+                            brokeredMessage.ScheduledEnqueueTimeUtc =
+                                defer.ToDateTimeUtc();
+                        }
+
+                        WriteIdentityToMessage(identity, brokeredMessage);
+
+                        await client.SendAsync(brokeredMessage);
+
+                        ms.Dispose();
+                    });
+            }
+            catch (MessagingEntityNotFoundException ex)
+            {
+                Logger.Warn("({0})No consumer for message type '{1}'. Message with id '{2}' ignored.",
+                                  message.CorrelationId, message.GetType(), message.MessageId);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorException(string.Format("({0})Error publishing message of type '{1}'", message.CorrelationId, message.GetType()), ex);
+                throw;
+            }
+
+            Logger.Info("({0})END: Publishing message of type '{1}'", message.CorrelationId, message.GetType().Name);
+        }
+
+        public async Task Defer(IMessage message, Instant instant, ICommonIdentity identity = null)
+        {
+            Logger.Info("({0})BEGIN: Deferring message of type '{1}' to '{2}'", message.CorrelationId, message.GetType().Name, instant.ToDateTimeUtc());
+
+            await Publish(message, identity, instant);
+
+            Logger.Info("({0})END: Deferring message of type '{1}' to '{2}'", message.CorrelationId, message.GetType().Name, instant.ToDateTimeUtc());
+        }
+
+        public async Task Subscribe(Type messageType, Type handler)
+        {
+            Logger.Info("BEGIN: Subscribing handler '{0}' to message '{1}'", handler, messageType.FullName);
+
+            var md5 = MD5.Create();
+            var data = md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes(handler.FullName)));
+            var stringBuilder = new StringBuilder();
+            for (int i = 0; i < data.Length; i++)
+            {
+                stringBuilder.Append(data[i].ToString("x2"));
+            }
+            var handlerNameHash = stringBuilder.ToString();
+
+            if (!typeof(IMessage).IsAssignableFrom(messageType)) throw new InvalidOperationException("The message type is not an IMessage");
+            if (!typeof(IHandler).IsAssignableFrom(handler)) throw new InvalidOperationException("Handler is not an IHandler");
+            var handlerInterface = typeof(IHandle<>).MakeGenericType(messageType);
+            if (!handlerInterface.IsAssignableFrom(handler)) throw new InvalidOperationException("Handler does not handle this message type (doesn't implement IHandle<mesageType>)");
+
+            var associatedMessageTypes = Directory.GetFiles(Path.GetDirectoryName((new Uri(Assembly.GetExecutingAssembly().CodeBase)).LocalPath), "*.dll")
+                                                      .Select(f => AppDomain.CurrentDomain.Load(AssemblyName.GetAssemblyName(f)))
+                                                      .SelectMany(a =>
+                                                      {
+                                                          try
+                                                          {
+                                                              return a.GetTypes();
+                                                          }
+                                                          catch (ReflectionTypeLoadException)
+                                                          {
+                                                              return new Type[0];
+                                                          }
+                                                      })
+                                                      .Where(t => messageType.IsAssignableFrom(t) && !t.IsInterface)
+                                                      .ToList();
+
+            foreach (var associatedMessageType in associatedMessageTypes)
+            {
+                try
+                {
+                    Type type = associatedMessageType;
+                    await
+                        RetryPolicy.ExecuteAsync(
+                            async () =>
+                            {                                
+                                if (!_namespaceManager.TopicExists(type.ToString()))
+                                {
+                                    try
+                                    {
+                                        Logger.Info("BEGIN: Creating topic named '{0}'", type.ToString());
+                                        await _namespaceManager.CreateTopicAsync(type.ToString());
+                                        Logger.Info("END: Creating topic named '{0}'", type.ToString());
+                                    }
+                                    catch (MessagingEntityAlreadyExistsException ex)
+                                    {
+                                        Logger.Debug("Topic '{0}' already exists", type);
+                                        Logger.Info("END: Creating topic named '{0}'", type.ToString());
+                                    }
+                                }
+                            });
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException(string.Format("Error creating topic: '{0}'", associatedMessageType), ex);
+                    throw;
+                }
+
+
+                try
+                {
+                    await
+                        RetryPolicy.ExecuteAsync(
+                            async () =>
+                            {
+                                if (
+                                    !_namespaceManager.SubscriptionExists(associatedMessageType.ToString(),
+                                                                          handlerNameHash))
+                                {
+                                    try
+                                    {
+                                        Logger.Info("BEGIN: Creating subscription for handler '{0}'", handlerNameHash);
+                                        await
+                                            _namespaceManager.CreateSubscriptionAsync(
+                                                associatedMessageType.ToString(),
+                                                handlerNameHash);
+                                        Logger.Info("END: Creating subscription for handler '{0}'", handlerNameHash);
+                                    }
+                                    catch (MessagingEntityAlreadyExistsException ex)
+                                    {
+                    Logger.Info("Subscription '{0}' already exists", handlerNameHash);
+                                        Logger.Info("END: Creating subscription for handler '{0}'", handlerNameHash);
+                                    }
+                                }
+                            });
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException(
+                        string.Format("Error creating subscription '{0}' for handler '{1}'", handlerNameHash,
+                                      handler), ex);
+                    throw;
+                }
+
+                SubscriptionClient client = null;
+
+                try
+                {
+                    RetryPolicy.ExecuteAction(() =>
+                        {
+                            client = SubscriptionClient.CreateFromConnectionString(_connectionString,
+                                                                                   associatedMessageType.ToString(),
+                                                                                   handlerNameHash);
+                        });
+
+                    client.OnMessageAsync(async m =>
+                        {
+                            Logger.Info("Message arrived for handler '{0}'", handler);
+
+                            var type = Type.GetType(m.ContentType, false);
+
+                            if (type == null)
+                            {
+                                throw new SystemException("Error getting message content type");
+                            }
+
+                            IMessage message;
+                            using (var stream = m.GetBody<Stream>())
+                            {
+                                message = _serializer.Deserialize(type, stream) as IMessage;
+                            }
+
+                            if (message == null)
+                            {
+                                throw new SystemException("Error deserializing message content");
+                            }
+
+                            try
+                            {
+                                var h = _handlerResolver.Resolve(handler);
+
+                                if (h == null)
+                                {
+                                    throw new SystemException("Could not resolve handler type");
+                                }
+
+                                bool handled = false;
+
+                                ImpersonateMessageIdentity(m);
+
+                                Logger.Info("({0})Executing handler type '{1}'", m.MessageId, handler);
+                                var handleTask =
+                                    (Task)
+                                    handler.GetMethod("Handle", new[] { associatedMessageType, typeof(bool) })
+                                           .Invoke(h,
+                                                   new object[] { message, m.DeliveryCount >= NumberOfRetriesBeforeDeadLettering });
+
+                                while (!handled)
+                                {
+                                    Task.WaitAny(handleTask, Task.Delay(15000));
+
+                                    if (handleTask.Exception != null)
+                                    {
+                                        throw handleTask.Exception;
+                                    }
+
+                                    if (handleTask.IsFaulted)
+                                    {
+                                        throw new SystemException("Unknown exception executing handler");
+                                    }
+
+                                    if (handleTask.IsCompleted)
+                                    {
+                                        handled = true;
+                                    }
+                                    else
+                                    {
+                                        Logger.Debug("({0})BEGIN: Handler execution timed out. Renewing lock",
+                                                     message.CorrelationId);
+
+                                        try
+                                        {
+                                            await RetryPolicy.ExecuteAsync(async () => await m.RenewLockAsync());
+                                        }
+                                        catch (Exception exx)
+                                        {
+                                            Logger.ErrorException(
+                                                string.Format("({0}) Error renewing message lock :",
+                                                              message.CorrelationId), exx);
+                                        }
+
+                                        Logger.Debug("({0})END: Handler execution timed out. Renewing lock",
+                                                     message.CorrelationId);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.ErrorException(
+                                    string.Format("({0})Error executing handler '{1}' for message type '{2}'",
+                                                  message.CorrelationId, handler, message.GetType()), ex);
+
+                                if (m.DeliveryCount >= NumberOfRetriesBeforeDeadLettering)
+                                {
+                                    try
+                                    {
+                                        Logger.Info("({0}) Deadlettering message type '{1}': {2}",
+                                                     message.CorrelationId, message.GetType(),
+                                                     JsonConvert.SerializeObject(message));
+                                        RetryPolicy.ExecuteAsync(m.DeadLetterAsync).Wait();
+                                    }
+                                    catch (Exception exx)
+                                    {
+                                        Logger.ErrorException(
+                                            string.Format("({0})Error dead lettering message type '{1}'",
+                                                          message.CorrelationId, message.GetType()), exx);
+                                        throw;
+                                    }
+                                    return;
+                                }
+
+                                throw;
+                            }
+
+                        }, new OnMessageOptions { AutoComplete = true, MaxConcurrentCalls = 5 });
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException(
+                        string.Format("Error subscribing handler '{0}' to subscription '{1}'", messageType,
+                                      handlerNameHash), ex);
+                    throw;
+                }
+            }
+            Logger.Info("END: Subscribing handler '{0}' to message '{1}'", handler, messageType.FullName);
+        }
+
+        private void WriteIdentityToMessage(ICommonIdentity identity, BrokeredMessage message)
+        {
+            if (identity != null)
+            {
+                message.Properties.Add("Identity.Id", identity.Id);
+                message.Properties.Add("Identity.OwnerId", identity.OwnerId);
+                message.Properties.Add("Identity.Name", identity.Name);
+                message.Properties.Add("Identity.AuthenticationType", identity.AuthenticationType);
+            }
+            else
+            {
+                message.Properties.Add("Identity.Id", Guid.Empty);
+                message.Properties.Add("Identity.OwnerId", Guid.Empty);
+                message.Properties.Add("Identity.Name", string.Empty);
+                message.Properties.Add("Identity.AuthenticationType", string.Empty);
+            }
+        }
+
+        private void ImpersonateMessageIdentity(BrokeredMessage message)
+        {
+            Thread.CurrentPrincipal =
+                new GenericPrincipal(new CommonIdentity((Guid)message.Properties["Identity.Id"],
+                                                       (string)message.Properties["Identity.Name"],
+                                                       (string)message.Properties["Identity.AuthenticationType"],
+                                                       (Guid)message.Properties["Identity.OwnerId"]), new string[0]);
+        }
+    }
+}

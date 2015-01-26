@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>CommonDomainLibrary.Tests</id>
+        <version>1.0.0</version>
+        <authors>MPS Broadband AB</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>CommonDomainLibrary.Tests</description>
+	    <dependencies>
+			<dependency id="Machine.Specifications" version="[0.8.1]" />
+			<dependency id="Machine.Specifications.Should" version="[0.7.1]" />
+			<dependency id="FakeItEasy" version="[1.18.0]" />
+	    </dependencies>
+    </metadata>
+	<files>
+		<file src="CommonDomainLibrary.Tests.dll" target="lib\net45" />
+		<file src="CommonDomainLibrary.Tests.pdb" target="lib\net45" />
+	</files>
+</package>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>CommonWebServiceLibrary.Tests</id>
+        <version>1.0.0</version>
+        <authors>MPS Broadband AB</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>CommonWebServiceLibrary.Tests</description>
+	    <dependencies>
+			<dependency id="Machine.Specifications" version="[0.8.1]" />
+			<dependency id="Machine.Specifications.Should" version="[0.7.1]" />
+			<dependency id="Machine.Fakes.FakeItEasy" version="[2.2.0]" />
+			<dependency id="RavenDB.Embedded" version="[2.0.2380]" />
+			<dependency id="Nancy.Testing" version="[0.21.1]" />
+	    </dependencies>
+    </metadata>
+	<files>
+		<file src="CommonWebServiceLibrary.Tests.dll" target="lib\net45" />
+		<file src="CommonWebServiceLibrary.Tests.pdb" target="lib\net45" />
+	</files>
+</package>

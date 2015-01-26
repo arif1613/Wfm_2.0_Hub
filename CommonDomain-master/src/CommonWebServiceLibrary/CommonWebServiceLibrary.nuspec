@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>CommonWebServiceLibrary</id>
+        <version>1.0.0</version>
+        <authors>MPS Broadband AB</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>CommonWebServiceLibrary</description>
+	    <dependencies>
+			<dependency id="Nancy" version="[0.21.1]" />
+			<dependency id="Nancy.Hosting.Aspnet" version="[0.21.1]" />
+			<dependency id="RavenDB.Client" version="[2.0.2380]" />
+			<dependency id="NodaTime" version="[1.1.1]" />
+			<dependency id="Newtonsoft.Json" version="[6.0.2]" />
+			<dependency id="Autofac" version="[3.3.0]" />
+	    </dependencies>
+    </metadata>
+	<files>
+		<file src="CommonWebServiceLibrary.dll" target="lib\net45" />
+		<file src="CommonWebServiceLibrary.pdb" target="lib\net45" />
+	</files>
+</package>

@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{43DAF44E-2D99-4DE6-891C-BA7655A35BFA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bus.Tests</RootNamespace>
+    <AssemblyName>Bus.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="NLog">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications.Clr4">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Machine.Specifications.0.8.1\lib\net45\Machine.Specifications.Clr4.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Machine.Specifications.0.8.1\lib\net45\Machine.Specifications.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications.TDNetRunner">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Machine.Specifications.0.8.1\lib\net45\Machine.Specifications.TDNetRunner.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications.Should">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Machine.Specifications.Should.0.7.1\lib\net45\Machine.Specifications.Should.dll</HintPath>
+    </Reference>
+    <Reference Include="NodaTime">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NodaTime.1.1.1\lib\net35-Client\NodaTime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.TransientFaultHandling.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TransientFaultHandling.Core.5.1.1209.1\lib\NET4\Microsoft.Practices.TransientFaultHandling.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceBus">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WindowsAzure.ServiceBus.2.3.4.0\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="Edit">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Edit.1.0.52\lib\net45\Edit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.MediaServices.Client">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\windowsazure.mediaservices.3.0.0.5\lib\net40\Microsoft.WindowsAzure.MediaServices.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WindowsAzure.Storage.3.1.0.1\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Abstractions">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.2.0.2380\lib\net40\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.2.0.2380\lib\net40\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Autofac.3.3.0\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Edit.JsonNet">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Edit.JsonNet.1.0.52\lib\net45\Edit.JsonNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Edit.AzureTableStorage">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Edit.AzureTableStorage.1.0.52\lib\net45\Edit.AzureTableStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Targets.Syslog">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NLog.Targets.Syslog.1.0.0\lib\net20\NLog.Targets.Syslog.dll</HintPath>
+    </Reference>
+    <Reference Include="FakeItEasy">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\FakeItEasy.1.18.0\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Fakes.Adapters.FakeItEasy">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Machine.Fakes.FakeItEasy.2.2.0\lib\net40\Machine.Fakes.Adapters.FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Fakes">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Machine.Fakes.2.2.0\lib\net40\Machine.Fakes.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.OData.5.6.2\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Spatial">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Edm">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.Edm.5.6.2\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyContext.cs" />
+    <Compile Include="BusTests\when_handling_a_message_fails.cs" />
+    <Compile Include="BusTests\when_publishing_a_message_with_an_identity.cs" />
+    <Compile Include="BusTests\when_deferring_a_message_with_no_consumers.cs" />
+    <Compile Include="BusTests\when_publishing_a_deferred_message_with_multiple_consumers.cs" />
+    <Compile Include="BusTests\when_publishing_a_message_with_a_consumer.cs" />
+    <Compile Include="BusTests\when_subscribing_a_consumer_to_a_family_of_messages.cs" />
+    <Compile Include="BusTests\when_publishing_a_message_with_no_consumer.cs" />
+    <Compile Include="BusTests\when_subscribing_a_consumer_to_the_bus.cs" />
+    <Compile Include="BusTests\when_subscribing_to_a_contract_message_type.cs" />
+    <Compile Include="BusTests\when_trying_to_instantiate_a_bus_with_a_null_resolver.cs" />
+    <Compile Include="BusTests\when_trying_to_subscribe_a_handler_for_the_wrong_type_of_message.cs" />
+    <Compile Include="BusTests\when_trying_to_subscribe_the_wrong_type_of_handler.cs" />
+    <Compile Include="BusTests\when_trying_to_subscribe_with_the_wrong_type_of_message.cs" />
+    <Compile Include="BusTests\when_two_bus_instances_try_to_create_the_same_topic_concurrently.cs" />
+    <Compile Include="InMemoryBusTests\when_deferring_a_message_with_no_consumers.cs" />
+    <Compile Include="InMemoryBusTests\when_publishing_a_deferred_message_with_a_consumer.cs" />
+    <Compile Include="InMemoryBusTests\when_publishing_a_deferred_message_with_multiple_consumers.cs" />
+    <Compile Include="InMemoryBusTests\when_publishing_a_message_with_a_consumer.cs" />
+    <Compile Include="InMemoryBusTests\when_subscribing_a_consumer_to_a_family_of_messages.cs" />
+    <Compile Include="InMemoryBusTests\when_publishing_a_message_with_multiple_consumers_on_different_bus_instances_per_subscription.cs" />
+    <Compile Include="InMemoryBusTests\when_publishing_a_message_with_multiple_different_consumers.cs" />
+    <Compile Include="InMemoryBusTests\when_publishing_a_message_with_no_consumer.cs" />
+    <Compile Include="InMemoryBusTests\when_subscribing_a_consumer_to_the_bus.cs" />
+    <Compile Include="InMemoryBusTests\when_trying_to_instantiate_a_bus_with_a_null_resolver.cs" />
+    <Compile Include="InMemoryBusTests\when_trying_to_subscribe_a_handler_for_the_wrong_type_of_message.cs" />
+    <Compile Include="InMemoryBusTests\when_trying_to_subscribe_the_wrong_type_of_handler.cs" />
+    <Compile Include="InMemoryBusTests\when_trying_to_subscribe_with_the_wrong_type_of_message.cs" />
+    <Compile Include="TaskExtensionMethod.cs" />
+    <Compile Include="TestDomain.cs" />
+    <Compile Include="BusTests\when_publishing_a_message_with_multiple_different_consumers.cs" />
+    <Compile Include="BusTests\when_publishing_a_deferred_message_with_a_consumer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BusTests\when_publishing_a_message_with_multiple_consumers_on_different_bus_instances_per_subscription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bus\Bus.csproj">
+      <Project>{56f535ba-9fce-4d16-819d-bd1c264b3da1}</Project>
+      <Name>Bus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonDomainLibrary\CommonDomainLibrary.csproj">
+      <Project>{EE50DDD3-C475-44A5-A93B-2E2E71A1A0F9}</Project>
+      <Name>CommonDomainLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonInfrastructureLibrary\CommonInfrastructureLibrary.csproj">
+      <Project>{74C22450-1FF0-4D7F-AE0A-91F3973FC538}</Project>
+      <Name>CommonInfrastructureLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTestingFramework\CommonTestingFramework.csproj">
+      <Project>{76973659-b74f-414c-9f1f-42855b0cdf73}</Project>
+      <Name>CommonTestingFramework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

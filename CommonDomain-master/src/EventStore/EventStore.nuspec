@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>EventStore</id>
+        <version>1.0.0</version>
+        <authors>MPS Broadband AB</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>EventStore</description>
+	    <dependencies>
+			<dependency id="Edit" version="" />
+	    </dependencies>
+    </metadata>
+	<files>
+		<file src="EventStore.dll" target="lib\net45" />
+		<file src="EventStore.pdb" target="lib\net45" />
+	</files>
+</package>

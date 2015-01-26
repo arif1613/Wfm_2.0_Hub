@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>CommonInfrastructureLibrary</id>
+        <version>1.0.0</version>
+        <authors>MPS Broadband AB</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>CommonInfrastructureLibrary</description>
+	    <dependencies>
+			<dependency id="RavenDB.Client" version="[2.0.2380]" />
+			<dependency id="NodaTime" version="[1.1.1]" />
+			<dependency id="Newtonsoft.Json" version="[6.0.2]" />
+			<dependency id="Autofac" version="[3.3.0]" />
+			<dependency id="Edit" version="" />
+			<dependency id="Edit.JsonNet" version="" />
+			<dependency id="Edit.AzureTableStorage" version="" />
+			<dependency id="NLog" version="[2.1.0]" />
+			<dependency id="NLog.Targets.Syslog" version="[1.0.0]" />
+	    </dependencies>
+    </metadata>
+	<files>
+		<file src="CommonInfrastructureLibrary.dll" target="lib\net45" />
+		<file src="CommonInfrastructureLibrary.pdb" target="lib\net45" />
+	</files>
+</package>
