@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
-using Microsoft.WindowsAzure.Storage;
 using NodaTime;
 using WfmHubWorker.Models;
 
@@ -24,7 +19,7 @@ namespace CreateEpgMsg
 
         public override void Run()
         {
-            Trace.TraceInformation("CreateEpgMsg is running");
+            Trace.TraceInformation("CreateEpgMsg running.......");
             while (!isstopped)
             {
                 try
