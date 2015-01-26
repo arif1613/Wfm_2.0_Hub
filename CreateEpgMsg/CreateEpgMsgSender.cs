@@ -49,8 +49,8 @@ namespace CreateEpgMsg
                     message.Properties.Add("CausationId", tcommand.CausationId);
                     _client.SendAsync(message);
                     
-                    //2 sec interval
-                    for (int i = 0; i <2; i++)
+                    //3 sec interval
+                    for (int i = 0; i <3; i++)
                     {
                         Thread.Sleep(60000);
                     }
