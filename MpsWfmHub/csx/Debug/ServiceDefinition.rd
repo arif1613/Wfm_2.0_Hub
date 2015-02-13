@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="MpsWfmHub" generation="1" functional="0" release="0" Id="8584c74d-23e4-4a60-895a-3d477b82b05f" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
+<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="MpsWfmHub" generation="1" functional="0" release="0" Id="db053d9c-f08a-4b32-87a4-aaa947d8ad6e" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
   <groups>
     <group name="MpsWfmHubGroup" generation="1" functional="0" release="0">
       <componentports>
@@ -150,9 +150,9 @@
     </group>
   </groups>
   <implements>
-    <implementation Id="3fd8e176-8a8b-4d8b-9092-d58b8232edff" ref="Microsoft.RedDog.Contract\ServiceContract\MpsWfmHubContract@ServiceDefinition">
+    <implementation Id="2cf2f0ce-ea17-4607-8684-1210ea2413ff" ref="Microsoft.RedDog.Contract\ServiceContract\MpsWfmHubContract@ServiceDefinition">
       <interfacereferences>
-        <interfaceReference Id="ddf0e42a-d5d5-4702-a2ba-e166fd70ff3d" ref="Microsoft.RedDog.Contract\Interface\WfmHubWorker:Endpoint1@ServiceDefinition">
+        <interfaceReference Id="e032da35-0497-4238-ba89-4cf1a9d32906" ref="Microsoft.RedDog.Contract\Interface\WfmHubWorker:Endpoint1@ServiceDefinition">
           <inPort>
             <inPortMoniker name="/MpsWfmHub/MpsWfmHubGroup/WfmHubWorker:Endpoint1" />
           </inPort>
