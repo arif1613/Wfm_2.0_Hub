@@ -13,9 +13,4 @@
       <Import moduleName="Diagnostics" />
     </Imports>
   </WorkerRole>
-  <WorkerRole name="CreateEpgMsg" vmsize="Small">
-    <Imports>
-      <Import moduleName="Diagnostics" />
-    </Imports>
-  </WorkerRole>
 </ServiceDefinition>

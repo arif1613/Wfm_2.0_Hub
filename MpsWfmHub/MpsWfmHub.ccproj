@@ -38,14 +38,6 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CreateEpgMsg\CreateEpgMsg.csproj">
-      <Name>CreateEpgMsg</Name>
-      <Project>{e51abb45-74a8-41c9-a92d-03c96ab1e60a}</Project>
-      <Private>True</Private>
-      <RoleType>Worker</RoleType>
-      <RoleName>CreateEpgMsg</RoleName>
-      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
-    </ProjectReference>
     <ProjectReference Include="..\ProcessMpsListenerMsg\ProcessMpsListenerMsg.csproj">
       <Name>ProcessMpsListenerMsg</Name>
       <Project>{9c3dc62b-cda6-407f-bb24-94c38953fb52}</Project>
